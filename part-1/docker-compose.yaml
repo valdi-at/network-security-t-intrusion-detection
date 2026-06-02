@@ -1,0 +1,48 @@
+services:
+  dvwa:
+    image: ghcr.io/digininja/dvwa:latest
+    ports:
+      - "80:80"
+    environment:
+      - DB_SERVER=${DB_SERVER}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+    depends_on:
+      - dvwa-db
+    networks:
+      - dvwa-net
+
+  dvwa-db:
+    image: mariadb:10
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    networks:
+      - dvwa-net
+
+  snort:
+    build:
+      context: .
+    environment:
+      - OINKCODE=${OINKCODE}
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./snort.conf:/etc/snort/snort.conf
+      - ./data/rules:/etc/snort/rules
+      - ./data/logs:/var/log/snort
+    command: >
+      snort -A console -i dvwa-br
+      -c /etc/snort/snort.conf
+      -l /var/log/snort
+
+networks:
+  dvwa-net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: dvwa-br
