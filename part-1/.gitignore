@@ -3,3 +3,6 @@
 
 # Snort Data
 data
+
+# PCAP Files
+*.pcap
